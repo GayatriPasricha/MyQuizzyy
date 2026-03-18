@@ -18,8 +18,10 @@ const generateQuizFromText = async (text, numQuestions = 5, isTopic = false) => 
       const currentBatch = Math.min(remaining, batchSize);
       
       const roleDescription = isTopic 
-        ? `You are an expert educator. Create a comprehensive quiz about the following topic: "${text}".`
-        : `You are an expert quiz generator. Analyze the following text content and generate questions based on its details: "${text.substring(0, 30000)}"`;
+        ? `You are an expert educator. Your task is to create a high-quality, professional quiz on the topic: "${text}". 
+           If the topic is a brief keyword (e.g., "Math", "Science"), use your extensive internal knowledge to generate a balanced and comprehensive quiz covering various fundamental and advanced aspects of that field.
+           If a detailed description is provided, focus the questions on the specific sub-topics or nuances mentioned.`
+        : `You are an expert quiz generator. Analyze the following text content and generate questions strictly based on its details: "${text.substring(0, 30000)}"`;
 
       const prompt = `
         ${roleDescription}
@@ -35,9 +37,9 @@ const generateQuizFromText = async (text, numQuestions = 5, isTopic = false) => 
             "correctAnswer": "Option A"
           }
         ]
-        - Ensure questions are accurate, challenging, and clear.
-        - For TOPICS: Ensure questions cover various aspects of the subject.
-        - For TEXT: Only use information provided in the text.
+        - For TOPICS: Ensure questions are accurate, non-repetitive, and range from fundamental concepts to practical applications. Provide a diverse mix of difficulty levels.
+        - For TEXT/PDF: Only use information provided in the source text.
+        - Ensure all options are plausible but only one is clearly correct.
       `;
 
       try {
