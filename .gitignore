@@ -1,10 +1,10 @@
 # Node dependencies
-node_modules/
+**/node_modules/
 
 # Environment variables
-.env
-.env.local
-.env.*.local
+**/.env
+**/.env.local
+**/.env.*.local
 
 # Backend specific
 backend/uploads/
@@ -15,6 +15,10 @@ frontend/dist/
 frontend/dev-dist
 frontend/dist-ssr
 frontend/*.log
+
+# Testing
+**/test-*.js
+test-gemini.js
 
 # Editors/OS
 .vscode/
