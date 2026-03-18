@@ -11,6 +11,7 @@ export const ThemeProvider = ({ children }) => {
 
   useEffect(() => {
     const root = window.document.documentElement;
+    console.log('Switching theme to:', theme);
     if (theme === 'dark') {
       root.classList.add('dark');
     } else {
