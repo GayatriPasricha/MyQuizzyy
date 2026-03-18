@@ -10,36 +10,41 @@ const generateShortId = () => crypto.randomBytes(4).toString('hex');
 exports.generateQuiz = async (req, res) => {
   try {
     const file = req.file;
-    if (!file) {
-      return res.status(400).json({ msg: 'Please upload a PDF file' });
-    }
-
-    if (file.mimetype !== 'application/pdf') {
-      return res.status(400).json({ msg: 'Only PDF files are supported currently' });
-    }
-
-    // 1. Extract Text
-    const fs = require('fs');
-    let textContent = '';
+    const { topic, mode, numQuestions: numQReq, title: titleReq } = req.body;
     
-    try {
-      const dataBuffer = fs.readFileSync(file.path);
-      textContent = await extractTextFromPDF(dataBuffer);
+    let textContent = '';
+    let finalTitle = titleReq || 'Generated Quiz';
+
+    if (mode === 'topic' && topic) {
+      textContent = topic;
+      if (!titleReq) finalTitle = topic.length > 30 ? topic.substring(0, 30) + '...' : topic;
+    } else if (file) {
+      if (file.mimetype !== 'application/pdf') {
+        return res.status(400).json({ msg: 'Only PDF files are supported' });
+      }
+
+      const fs = require('fs');
+      try {
+        const dataBuffer = fs.readFileSync(file.path);
+        textContent = await extractTextFromPDF(dataBuffer);
+        fs.unlinkSync(file.path);
+      } catch (readErr) {
+        if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+        return res.status(500).json({ msg: 'Failed to read uploaded file' });
+      }
       
-      // Clean up the temporary file immediately after reading
-      fs.unlinkSync(file.path);
-    } catch (readErr) {
-      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
-      return res.status(500).json({ msg: 'Failed to read uploaded file' });
+      if (!titleReq) finalTitle = file.originalname.replace('.pdf', '');
+    } else {
+      return res.status(400).json({ msg: 'Please provide a PDF file or a topic' });
     }
 
     if (!textContent || textContent.trim().length === 0) {
-      return res.status(400).json({ msg: 'Could not extract text from the provided PDF' });
+      return res.status(400).json({ msg: 'No content found to generate quiz from' });
     }
 
     // 2. Generate questions via AI
-    const numQuestions = parseInt(req.body.numQuestions) || 5;
-    const questions = await generateQuizFromText(textContent, numQuestions);
+    const numQuestions = parseInt(numQReq) || 5;
+    const questions = await generateQuizFromText(textContent, numQuestions, mode === 'topic');
 
     if (!questions || !Array.isArray(questions) || questions.length === 0) {
       return res.status(500).json({ msg: 'Failed to generate quiz questions' });
@@ -47,7 +52,7 @@ exports.generateQuiz = async (req, res) => {
 
     // 3. Save to DB
     const shortId = generateShortId();
-    const title = req.body.title || file.originalname.replace('.pdf', '') || 'Generated Quiz';
+    const title = finalTitle;
     
     // req.user might be null if guest, which is handled correctly by the schema default
     const quiz = new Quiz({

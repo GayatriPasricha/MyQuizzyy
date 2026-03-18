@@ -1,6 +1,6 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-const generateQuizFromText = async (text, numQuestions = 5) => {
+const generateQuizFromText = async (text, numQuestions = 5, isTopic = false) => {
   try {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey || apiKey === 'your_gemini_api_key_here') {
@@ -11,14 +11,20 @@ const generateQuizFromText = async (text, numQuestions = 5) => {
     const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
 
     let allQuestions = [];
-    const batchSize = 10; // Smaller batches for better reliability
+    const batchSize = 10;
     let remaining = numQuestions;
 
     while (remaining > 0) {
       const currentBatch = Math.min(remaining, batchSize);
       
+      const roleDescription = isTopic 
+        ? `You are an expert educator. Create a comprehensive quiz about the following topic: "${text}".`
+        : `You are an expert quiz generator. Analyze the following text content and generate questions based on its details: "${text.substring(0, 30000)}"`;
+
       const prompt = `
-        You are an expert quiz generator. Analyze the following text and generate exactly ${currentBatch} multiple-choice questions based on the content.
+        ${roleDescription}
+        
+        Generate exactly ${currentBatch} multiple-choice questions.
         
         CRITICAL INSTRUCTIONS:
         - Output strictly in this JSON format without any markdown wrappers or comments:
@@ -29,9 +35,9 @@ const generateQuizFromText = async (text, numQuestions = 5) => {
             "correctAnswer": "Option A"
           }
         ]
-
-        Text content:
-        "${text.substring(0, 30000)}"
+        - Ensure questions are accurate, challenging, and clear.
+        - For TOPICS: Ensure questions cover various aspects of the subject.
+        - For TEXT: Only use information provided in the text.
       `;
 
       try {

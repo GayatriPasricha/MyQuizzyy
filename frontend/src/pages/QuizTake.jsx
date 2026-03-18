@@ -99,12 +99,12 @@ const QuizTake = () => {
   );
 
   if (error) return (
-    <div className="flex-1 flex items-center justify-center p-6">
-      <div className="bg-red-50 text-red-600 p-6 rounded-2xl max-w-md text-center border border-red-100 shadow-sm">
+    <div className="flex-1 flex items-center justify-center p-6 bg-slate-50 dark:bg-dark-900 transition-colors">
+      <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-6 rounded-2xl max-w-md text-center border border-red-100 dark:border-red-900/30 shadow-sm">
         <XCircle className="w-12 h-12 mx-auto mb-4" />
         <h2 className="text-xl font-bold mb-2">Error</h2>
         <p className="font-medium">{error}</p>
-        <Link to="/" className="mt-6 inline-block bg-white text-slate-700 font-semibold px-6 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors">Go Home</Link>
+        <Link to="/" className="mt-6 inline-block bg-white dark:bg-dark-700 text-slate-700 dark:text-slate-300 font-semibold px-6 py-2 rounded-xl border border-slate-200 dark:border-dark-600 hover:bg-slate-50 dark:hover:bg-dark-600 transition-colors">Go Home</Link>
       </div>
     </div>
   );
@@ -113,41 +113,41 @@ const QuizTake = () => {
     const finalScore = responses.filter(r => r.isCorrect).length;
 
     return (
-      <div className="flex-1 flex flex-col items-center justify-start p-4 sm:p-8 bg-slate-50">
+      <div className="flex-1 flex flex-col items-center justify-start p-4 sm:p-8 bg-slate-50 dark:bg-dark-900 transition-colors">
         <motion.div 
           initial={{ scale: 0.9, opacity: 0 }} 
           animate={{ scale: 1, opacity: 1 }} 
-          className="w-full max-w-3xl bg-white p-8 rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100"
+          className="w-full max-w-3xl bg-white dark:bg-dark-800 p-8 rounded-[2rem] shadow-xl shadow-slate-200/50 dark:shadow-black/20 border border-slate-100 dark:border-dark-700"
         >
           <div className="flex flex-col items-center text-center mb-10">
             <div className="w-24 h-24 bg-gradient-to-br from-primary-400 to-green-500 rounded-full flex items-center justify-center text-white mb-6 shadow-lg shadow-primary-500/30">
               <Trophy className="w-12 h-12" />
             </div>
-            <h2 className="text-4xl font-black text-slate-800 mb-2">Quiz Completed!</h2>
-            <p className="text-slate-500 font-medium text-lg">{quiz.title}</p>
+            <h2 className="text-4xl font-black text-slate-800 dark:text-white mb-2">Quiz Completed!</h2>
+            <p className="text-slate-500 dark:text-slate-400 font-medium text-lg">{quiz.title}</p>
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-10">
-            <div className="bg-slate-50 rounded-2xl p-6 text-center border border-slate-100">
-              <p className="text-slate-500 font-semibold mb-1">Final Score</p>
-              <p className="text-4xl font-black text-primary-600">{finalScore} <span className="text-2xl text-slate-400">/ {quiz.questions.length}</span></p>
+            <div className="bg-slate-50 dark:bg-dark-700 rounded-2xl p-6 text-center border border-slate-100 dark:border-dark-600">
+              <p className="text-slate-500 dark:text-slate-400 font-semibold mb-1">Final Score</p>
+              <p className="text-4xl font-black text-primary-600 dark:text-primary-400">{finalScore} <span className="text-2xl text-slate-400 dark:text-slate-500">/ {quiz.questions.length}</span></p>
             </div>
-            <div className="bg-slate-50 rounded-2xl p-6 text-center border border-slate-100">
-              <p className="text-slate-500 font-semibold mb-1">Time Taken</p>
-              <p className="text-4xl font-black text-slate-700 flex items-center justify-center gap-2">
-                <Clock className="w-6 h-6 text-slate-400" />
+            <div className="bg-slate-50 dark:bg-dark-700 rounded-2xl p-6 text-center border border-slate-100 dark:border-dark-600">
+              <p className="text-slate-500 dark:text-slate-400 font-semibold mb-1">Time Taken</p>
+              <p className="text-4xl font-black text-slate-700 dark:text-slate-200 flex items-center justify-center gap-2">
+                <Clock className="w-6 h-6 text-slate-400 dark:text-slate-500" />
                 {Math.floor(timeTaken / 1000)}s
               </p>
             </div>
           </div>
 
           <div>
-            <h3 className="text-xl font-bold text-slate-800 mb-6">Review Questions</h3>
+            <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-6">Review Questions</h3>
             <div className="space-y-6">
               {quiz.questions.map((q, i) => {
                 const response = responses.find(r => r.questionId === q._id) || {};
                 return (
-                  <div key={i} className={`p-6 rounded-2xl border ${response.isCorrect ? 'border-green-200 bg-green-50/30' : 'border-red-200 bg-red-50/30'}`}>
+                  <div key={i} className={`p-6 rounded-2xl border ${response.isCorrect ? 'border-green-200 bg-green-50/30 dark:border-green-900/40 dark:bg-green-900/10' : 'border-red-200 bg-red-50/30 dark:border-red-900/40 dark:bg-red-900/10'}`}>
                     <div className="flex items-start gap-4">
                       {response.isCorrect ? (
                         <CheckCircle2 className="w-6 h-6 text-green-500 shrink-0 mt-1" />
@@ -155,18 +155,18 @@ const QuizTake = () => {
                         <XCircle className="w-6 h-6 text-red-500 shrink-0 mt-1" />
                       )}
                       <div>
-                        <p className="font-bold text-slate-800 text-lg mb-3">{i+1}. {q.questionText}</p>
+                        <p className="font-bold text-slate-800 dark:text-white text-lg mb-3">{i+1}. {q.questionText}</p>
                         <div className="space-y-2">
                            <div className="flex items-center gap-2 text-sm font-medium">
-                             <span className="text-slate-500 w-16">Your Answer:</span>
-                             <span className={response.isCorrect ? "text-green-700 font-bold" : "text-red-600 font-bold"}>
+                             <span className="text-slate-500 dark:text-slate-400 w-16">Your Answer:</span>
+                             <span className={response.isCorrect ? "text-green-700 dark:text-green-400 font-bold" : "text-red-600 dark:text-red-400 font-bold"}>
                                {response.selectedOption}
                              </span>
                            </div>
                            {!response.isCorrect && (
                              <div className="flex items-center gap-2 text-sm font-medium">
-                               <span className="text-slate-500 w-16">Correct:</span>
-                               <span className="text-primary-700 font-bold bg-primary-100 px-2 py-0.5 rounded">
+                               <span className="text-slate-500 dark:text-slate-400 w-16">Correct:</span>
+                               <span className="text-primary-700 dark:text-primary-400 font-bold bg-primary-100 dark:bg-primary-900/30 px-2 py-0.5 rounded">
                                  {q.correctAnswer}
                                </span>
                              </div>
@@ -181,7 +181,7 @@ const QuizTake = () => {
           </div>
 
           <div className="mt-10 flex gap-4">
-            <Link to="/" className="flex-1 flex items-center justify-center gap-2 bg-slate-100 text-slate-700 py-4 text-lg font-bold rounded-xl hover:bg-slate-200 transition-colors">
+            <Link to="/" className="flex-1 flex items-center justify-center gap-2 bg-slate-100 dark:bg-dark-700 text-slate-700 dark:text-slate-300 py-4 text-lg font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-dark-600 transition-colors">
               <Home className="w-5 h-5" /> Home
             </Link>
             {!user && (
@@ -198,17 +198,17 @@ const QuizTake = () => {
   const currentQState = quiz.questions[currentIndex];
 
   return (
-    <div className="flex-1 flex flex-col p-4 sm:p-8 bg-slate-50">
+    <div className="flex-1 flex flex-col p-4 sm:p-8 bg-slate-50 dark:bg-dark-900 transition-colors">
       <div className="max-w-3xl w-full mx-auto">
         
         {/* Progress Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h2 className="text-2xl font-bold text-slate-800 line-clamp-1">{quiz.title}</h2>
-            <p className="text-slate-500 font-medium text-sm mt-1">Question {currentIndex + 1} of {quiz.questions.length}</p>
+            <h2 className="text-2xl font-bold text-slate-800 dark:text-white line-clamp-1">{quiz.title}</h2>
+            <p className="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Question {currentIndex + 1} of {quiz.questions.length}</p>
           </div>
-          <div className="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-100 flex items-center gap-3">
-             <div className="flex items-center gap-1.5 text-slate-600 font-bold">
+          <div className="bg-white dark:bg-dark-800 px-4 py-2 rounded-xl shadow-sm border border-slate-100 dark:border-dark-700 flex items-center gap-3">
+             <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 font-bold">
                <Trophy className="w-4 h-4 text-yellow-500" />
                {score}
              </div>
@@ -216,7 +216,7 @@ const QuizTake = () => {
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full bg-slate-200 h-2.5 rounded-full mb-10 overflow-hidden">
+        <div className="w-full bg-slate-200 dark:bg-dark-700 h-2.5 rounded-full mb-10 overflow-hidden">
           <motion.div 
             className="h-full bg-primary-500 rounded-full"
             initial={{ width: 0 }}
@@ -233,9 +233,9 @@ const QuizTake = () => {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -50, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl shadow-slate-200/50 border border-slate-100"
+            className="bg-white dark:bg-dark-800 rounded-3xl p-6 sm:p-10 shadow-xl shadow-slate-200/50 dark:shadow-black/20 border border-slate-100 dark:border-dark-700"
           >
-            <h3 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-8 leading-snug">
+            <h3 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-white mb-8 leading-snug">
               {currentQState.questionText}
             </h3>
 
@@ -244,20 +244,20 @@ const QuizTake = () => {
                 const isSelected = selectedOption === option;
                 const isCorrectOption = option === currentQState.correctAnswer;
                 
-                let btnStyle = "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700";
+                let btnStyle = "bg-slate-50 dark:bg-dark-700/50 hover:bg-slate-100 dark:hover:bg-dark-700 border-slate-200 dark:border-dark-600 text-slate-700 dark:text-slate-300";
                 
                 if (isAnswered) {
                   if (isSelected && isCorrectOption) {
-                    btnStyle = "bg-green-100 border-green-500 text-green-800 ring-2 ring-green-500/50";
+                    btnStyle = "bg-green-100 dark:bg-green-900/30 border-green-500 dark:border-green-600 text-green-800 dark:text-green-400 ring-2 ring-green-500/50";
                   } else if (isSelected && !isCorrectOption) {
-                    btnStyle = "bg-red-100 border-red-500 text-red-800 ring-2 ring-red-500/50";
+                    btnStyle = "bg-red-100 dark:bg-red-900/30 border-red-500 dark:border-red-600 text-red-800 dark:text-red-400 ring-2 ring-red-500/50";
                   } else if (!isSelected && isCorrectOption) {
-                    btnStyle = "bg-green-50 border-green-300 text-green-700";
+                    btnStyle = "bg-green-50 dark:bg-green-900/10 border-green-300 dark:border-green-800 text-green-700 dark:text-green-500";
                   } else {
-                     btnStyle = "bg-slate-50 border-slate-200 text-slate-400 opacity-50";
+                     btnStyle = "bg-slate-50 dark:bg-dark-700/30 border-slate-200 dark:border-dark-700 text-slate-400 dark:text-slate-600 opacity-50";
                   }
                 } else if (isSelected) {
-                   btnStyle = "bg-primary-50 border-primary-400 text-primary-700 shadow-md";
+                   btnStyle = "bg-primary-50 dark:bg-primary-900/20 border-primary-400 dark:border-primary-600 text-primary-700 dark:text-primary-400 shadow-md";
                 }
 
                 return (
