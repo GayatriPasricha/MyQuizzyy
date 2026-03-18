@@ -25,22 +25,30 @@ app.use(helmet());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-// Dynamic CORS for Local Development
+// Dynamic CORS for Local & Production
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   'http://localhost:5173',
   'http://localhost:5174',
-  'http://localhost:3000'
-].filter(Boolean);
+  'http://localhost:3000',
+  'https://my-quizzyy.vercel.app'
+].filter(Boolean).map(o => o.replace(/\/$/, "")); // Strip trailing slashes
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || origin.startsWith('http://localhost:')) {
+    
+    const normalizedOrigin = origin.replace(/\/$/, "");
+    const isAllowed = allowedOrigins.includes(normalizedOrigin) || 
+                     normalizedOrigin.startsWith('http://localhost:') ||
+                     normalizedOrigin.endsWith('.vercel.app'); // Allow Vercel previews
+    
+    if (isAllowed) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.error(`❌ CORS REJECTED: Origin "${origin}" is not in the allowed list:`, allowedOrigins);
+      // Instead of an error, we return false to the origin check which naturally fails CORS
+      callback(null, false); 
     }
   },
   credentials: true
