@@ -43,11 +43,11 @@ const { requireAuth } = require('../middleware/auth');
 // Create Quiz (Accepts PDF upload) - Requires Authentication
 router.post('/generate', requireAuth, upload.single('file'), quizController.generateQuiz);
 
-// Get Quiz by shortId (Publicly accessible)
-router.get('/:shortId', quizController.getQuizByShortId);
-
 // Get all logged-in user's created quizzes
 router.get('/user/my-quizzes', authMiddleware, quizController.getUserQuizzes);
+
+// Get Quiz by shortId (Publicly accessible) - Move to bottom of primary GET routes
+router.get('/:shortId', quizController.getQuizByShortId);
 
 // Submit Quiz attempt (Publicly accessible but tracks user/guest)
 router.post('/:shortId/attempt', authMiddleware, quizController.submitAttempt);

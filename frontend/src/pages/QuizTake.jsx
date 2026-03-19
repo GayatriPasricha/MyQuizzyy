@@ -31,7 +31,11 @@ const QuizTake = () => {
         setQuiz(res.data);
         setStartTime(Date.now());
       } catch (err) {
-        setError('Quiz not found or could not be loaded.');
+        if (err.response?.status === 404) {
+          setError('Quiz not found. Please check the link and try again.');
+        } else {
+          setError('Failed to load quiz. This could be a connection issue.');
+        }
       } finally {
         setLoading(false);
       }
