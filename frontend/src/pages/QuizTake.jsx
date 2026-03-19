@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, XCircle, Clock, Trophy, ArrowRight, Home } from 'lucide-react';
+import { CheckCircle2, XCircle, Clock, Trophy, ArrowRight, Home, Share2 } from 'lucide-react';
 
 const QuizTake = () => {
   const { shortId } = useParams();
@@ -180,12 +180,28 @@ const QuizTake = () => {
             </div>
           </div>
 
-          <div className="mt-10 flex gap-4">
-            <Link to="/" className="flex-1 flex items-center justify-center gap-2 bg-slate-100 dark:bg-dark-700 text-slate-700 dark:text-slate-300 py-4 text-lg font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-dark-600 transition-colors">
+          <div className="mt-10 flex flex-wrap gap-4">
+            <Link to="/" className="flex-1 min-w-[140px] flex items-center justify-center gap-2 bg-slate-100 dark:bg-dark-700 text-slate-700 dark:text-slate-300 py-4 text-lg font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-dark-600 transition-colors">
               <Home className="w-5 h-5" /> Home
             </Link>
+            
+            <button 
+              onClick={() => {
+                const shareUrl = `${window.location.origin}/quiz/${shortId}`;
+                navigator.clipboard.writeText(shareUrl)
+                  .then(() => alert("Quiz link copied to clipboard!"))
+                  .catch(err => {
+                    console.error("Failed to copy link:", err);
+                    alert("Failed to copy link.");
+                  });
+              }}
+              className="flex-1 min-w-[140px] flex items-center justify-center gap-2 bg-white dark:bg-dark-700 text-primary-600 dark:text-primary-400 border-2 border-primary-100 dark:border-primary-900/30 py-4 text-lg font-bold rounded-xl hover:bg-primary-50 dark:hover:bg-primary-900/10 transition-colors"
+            >
+              <Share2 className="w-5 h-5" /> Share
+            </button>
+
             {!user && (
-              <Link to="/register" className="flex-1 flex items-center justify-center gap-2 bg-primary-600 text-white py-4 text-lg font-bold rounded-xl hover:bg-primary-700 transition-colors shadow-lg shadow-primary-500/30">
+              <Link to="/register" className="flex-1 min-w-[140px] flex items-center justify-center gap-2 bg-primary-600 text-white py-4 text-lg font-bold rounded-xl hover:bg-primary-700 transition-colors shadow-lg shadow-primary-500/30">
                 Save Progress
               </Link>
             )}

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
 import { motion } from 'framer-motion';
-import { FileText, Calendar, Plus, ExternalLink, Activity } from 'lucide-react';
+import { FileText, Calendar, Plus, Share2, Activity } from 'lucide-react';
 
 const Dashboard = () => {
   const { user } = useContext(AuthContext);
@@ -87,12 +87,22 @@ const Dashboard = () => {
                   </Link>
                   <button 
                     onClick={() => {
-                      navigator.clipboard.writeText(`${window.location.origin}/quiz/${quiz.shortId}`);
-                      alert("Link copied to clipboard!");
+                      if (!quiz.shortId) {
+                        alert("Error: Quiz ID not found.");
+                        return;
+                      }
+                      const shareUrl = `${window.location.origin}/quiz/${quiz.shortId}`;
+                      navigator.clipboard.writeText(shareUrl)
+                        .then(() => alert("Link copied to clipboard!"))
+                        .catch(err => {
+                          console.error("Failed to copy link:", err);
+                          alert("Failed to copy link. Please copy it manually from the URL bar.");
+                        });
                     }}
+                    title="Share Quiz"
                     className="p-2 border border-slate-200 dark:border-dark-600 rounded-lg text-slate-500 dark:text-slate-400 hover:text-primary-600 hover:border-primary-200 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
                   >
-                    <ExternalLink className="w-5 h-5" />
+                    <Share2 className="w-5 h-5" />
                   </button>
                 </div>
               </motion.div>
