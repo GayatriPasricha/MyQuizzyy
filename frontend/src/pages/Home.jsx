@@ -80,7 +80,7 @@ const Home = () => {
         <input 
           type="range" 
           min="3" 
-          max="30" 
+          max="200" 
           value={numQuestions}
           onChange={(e) => setNumQuestions(e.target.value)}
           disabled={isGenerating}
@@ -88,7 +88,7 @@ const Home = () => {
         />
         <div className="flex justify-between text-[10px] sm:text-xs font-semibold text-slate-400 dark:text-slate-500 mt-2 px-1">
           <span>3 (Quick)</span>
-          <span>30 (Detailed)</span>
+          <span>200 (Extensive)</span>
         </div>
       </div>
 

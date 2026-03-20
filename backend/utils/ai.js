@@ -17,6 +17,10 @@ const generateQuizFromText = async (text, numQuestions = 5, isTopic = false) => 
     while (remaining > 0) {
       const currentBatch = Math.min(remaining, batchSize);
       
+      const previousQuestionsContext = allQuestions.length > 0 
+        ? `\n\nALREADY GENERATED QUESTIONS (DO NOT REPEAT THESE):\n${allQuestions.map((q, i) => `${i + 1}. ${q.questionText}`).join('\n')}`
+        : '';
+
       const roleDescription = isTopic 
         ? `You are an expert educator. Your task is to create a high-quality, professional quiz on the topic: "${text}". 
            If the topic is a brief keyword (e.g., "Math", "Science"), use your extensive internal knowledge to generate a balanced and comprehensive quiz covering various fundamental and advanced aspects of that field.
@@ -26,7 +30,8 @@ const generateQuizFromText = async (text, numQuestions = 5, isTopic = false) => 
       const prompt = `
         ${roleDescription}
         
-        Generate exactly ${currentBatch} multiple-choice questions.
+        Generate exactly ${currentBatch} multiple-choice questions. 
+        ${previousQuestionsContext}
         
         CRITICAL INSTRUCTIONS:
         - Output strictly in this JSON format without any markdown wrappers or comments:
@@ -39,6 +44,7 @@ const generateQuizFromText = async (text, numQuestions = 5, isTopic = false) => 
         ]
         - For TOPICS: Ensure questions are accurate, non-repetitive, and range from fundamental concepts to practical applications. Provide a diverse mix of difficulty levels.
         - For TEXT/PDF: Only use information provided in the source text.
+        - DO NOT repeat or rephrase any of the "ALREADY GENERATED QUESTIONS" listed above. Each question must be unique and cover new ground.
         - Ensure all options are plausible but only one is clearly correct.
       `;
 
