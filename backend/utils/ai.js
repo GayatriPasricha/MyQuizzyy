@@ -8,10 +8,13 @@ const generateQuizFromText = async (text, numQuestions = 5, isTopic = false) => 
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
+    const model = genAI.getGenerativeModel({ 
+      model: 'gemini-1.5-flash',
+      generationConfig: { responseMimeType: 'application/json' }
+    });
 
     let allQuestions = [];
-    const batchSize = 10;
+    const batchSize = 50;
     let remaining = numQuestions;
 
     while (remaining > 0) {
@@ -34,7 +37,7 @@ const generateQuizFromText = async (text, numQuestions = 5, isTopic = false) => 
         ${previousQuestionsContext}
         
         CRITICAL INSTRUCTIONS:
-        - Output strictly in this JSON format without any markdown wrappers or comments:
+        - Output strictly an array of JSON objects matching this format:
         [
           {
             "questionText": "The question string here",
@@ -51,17 +54,7 @@ const generateQuizFromText = async (text, numQuestions = 5, isTopic = false) => 
       try {
         const result = await model.generateContent(prompt);
         const responseText = result.response.text();
-        
-        let jsonStr = responseText.trim();
-        // More aggressive cleaning of response text
-        const jsonMatch = jsonStr.match(/\[\s*\{.*\}\s*\]/s);
-        if (jsonMatch) {
-          jsonStr = jsonMatch[0];
-        } else if (jsonStr.startsWith('```')) {
-          jsonStr = jsonStr.replace(/^```(json)?\n?/, '').replace(/\n?```$/, '').trim();
-        }
-        
-        const parsed = JSON.parse(jsonStr);
+        const parsed = JSON.parse(responseText);
         allQuestions = allQuestions.concat(parsed);
       } catch (parseOrGenError) {
         console.error('Batch generation error:', parseOrGenError);
