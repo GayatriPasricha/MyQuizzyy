@@ -17,7 +17,11 @@ const generateQuizFromText = async (text, numQuestions = 5, isTopic = false) => 
     const batchSize = 50;
     let remaining = numQuestions;
 
-    while (remaining > 0) {
+    let attempts = 0;
+    const maxAttempts = 20;
+
+    while (remaining > 0 && attempts < maxAttempts) {
+      attempts++;
       const currentBatch = Math.min(remaining, batchSize);
       
       const previousQuestionsContext = allQuestions.length > 0 
@@ -55,15 +59,20 @@ const generateQuizFromText = async (text, numQuestions = 5, isTopic = false) => 
         const result = await model.generateContent(prompt);
         const responseText = result.response.text();
         const parsed = JSON.parse(responseText);
-        allQuestions = allQuestions.concat(parsed);
+        
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          allQuestions = allQuestions.concat(parsed);
+          remaining = numQuestions - allQuestions.length;
+        } else {
+          // Break if it didn't generate any questions in this batch
+          break;
+        }
       } catch (parseOrGenError) {
         console.error('Batch generation error:', parseOrGenError);
         // If it's the first batch and it fails, we should probably know
         if (allQuestions.length === 0) throw parseOrGenError;
         break;
       }
-      
-      remaining -= currentBatch;
     }
 
     // Return exactly the amount requested or whatever successfully generated
